@@ -17,7 +17,7 @@ use std::fs;
 use serenity::model::gateway::Ready;
 
 #[group]
-#[commands(ping, private, devschuppen, help)]
+#[commands(ping, devschuppen, help)]
 struct General;
 
 struct Handler;
@@ -53,17 +53,6 @@ async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
     Ok(())
 }
 
-#[command]
-async fn private(ctx: &Context, msg: &Message) -> CommandResult {
-    let code_arr = msg.content.split("aoc private ").collect::<Vec<&str>>();
-    println!("{}", code_arr.len());
-    if code_arr.len() != 2 {
-        msg.reply(ctx, "Your command must have these syntax: ```aoc private <code>```").await?;
-    } else {
-        msg.reply(ctx, "```This function is not available yet```").await?;
-    }
-    Ok(())
-}
 
 #[command]
 async fn help(ctx: &Context, msg: &Message) -> CommandResult {
@@ -73,7 +62,12 @@ async fn help(ctx: &Context, msg: &Message) -> CommandResult {
 
 #[command]
 async fn devschuppen(ctx: &Context, msg: &Message) -> CommandResult {
-    mysql::functions::get_dev_schuppen_request_permission().await;
+    let permission = mysql::functions::get_dev_schuppen_request_permission().await;
+    if permission {
+        api::call_devschuppen_leaderboard::call_api().await;
+    } else {
+        msg.reply(ctx, "```you can only check stats every 15 minutes```").await?;
+    }
     Ok(())
 }
 

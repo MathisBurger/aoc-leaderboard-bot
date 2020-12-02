@@ -1,1 +1,1 @@
-pub mod call_private_leaderboard;
+pub mod call_devschuppen_leaderboard;
