@@ -2,14 +2,14 @@ use reqwest;
 use serde_json;
 use reqwest::header::{HeaderMap, ACCEPT, ACCEPT_LANGUAGE, CACHE_CONTROL, COOKIE};
 
+
 pub struct user {
     pub(crate) name: String,
     pub(crate) coins: i32,
-    pub(crate) half_finished_tasks: i32,
-    pub(crate) full_finished_tasks: i32
+    pub(crate) stars: i32
 }
 
-pub async fn call_api() {
+pub async fn call_api() -> Vec<user>{
     let mut headers = HeaderMap::new();
     headers.insert(ACCEPT, "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9".parse().unwrap());
     headers.insert(ACCEPT_LANGUAGE, "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7".parse().unwrap());
@@ -28,7 +28,15 @@ pub async fn call_api() {
     let text = res.text().await.unwrap();
     let data: serde_json::Value = serde_json::from_str(text.as_str()).expect("Cannot parse json");
     let event = data["event"].as_str().unwrap().to_string();
-    println!("{:?}", data["members"]);
-
+    let mut user_info: Vec<user> = vec![];
+    let user = data["members"].as_object().unwrap();
+    for (k, v) in user.iter() {
+        user_info.push(user {
+            name: v["name"].as_str().unwrap().to_string(),
+            coins: v["local_score"].as_i64().unwrap().as_i32(),
+            stars: v["stars"].as_i64().unwrap().as_i32()
+        });
+    }
+    user_info
 
 }

@@ -64,7 +64,7 @@ async fn help(ctx: &Context, msg: &Message) -> CommandResult {
 async fn devschuppen(ctx: &Context, msg: &Message) -> CommandResult {
     let permission = mysql::functions::get_dev_schuppen_request_permission().await;
     if permission {
-        api::call_devschuppen_leaderboard::call_api().await;
+        let user = api::call_devschuppen_leaderboard::call_api().await;
     } else {
         msg.reply(ctx, "```you can only check stats every 15 minutes```").await?;
     }
