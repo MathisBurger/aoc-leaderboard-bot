@@ -1,11 +1,16 @@
 use crate::api::call_devschuppen_leaderboard::user;
 use std::collections::HashMap;
+use serenity::model::channel::EmbedField;
 
-pub async fn get_leaderboard(user: Vec<user>) {
-
+pub async fn get_leaderboard(user: Vec<user>) -> String {
+    let mut embed_string = String::new();
+    for i in 0..user.len() {
+        embed_string = format!("{}\n{}) - `{}` - `{}`", embed_string, i + 1, user[i].name.replace("\"", ""), user[i].stars);
+    }
+    embed_string
 }
 
-async fn sort_user_by_points(user: Vec<user>) -> Vec<user> {
+pub async fn sort_user_by_points(user: Vec<user>) -> Vec<user> {
     let mut sorted_user: Vec<user> = vec![];
     let mut map: HashMap<i32, String> = HashMap::new();
     let mut coin_array: Vec<i32> = vec![];
