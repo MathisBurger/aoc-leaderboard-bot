@@ -1,9 +1,10 @@
 mod api;
 mod mysql;
+mod utils;
 
 use serenity::async_trait;
 use serenity::client::{Client, Context, EventHandler};
-use serenity::model::channel::Message;
+use serenity::model::channel::{Message, Embed};
 use serenity::framework::standard::{
     StandardFramework,
     CommandResult,
@@ -56,7 +57,15 @@ async fn ping(ctx: &Context, msg: &Message) -> CommandResult {
 
 #[command]
 async fn help(ctx: &Context, msg: &Message) -> CommandResult {
-    msg.reply(ctx, "ist zu blöd den Bot zu bedienen.").await?;
+    msg.reply(ctx,
+              Embed::fake(|e|
+                  e
+                      .title("Leaderboard")
+                      .description("Embedded")
+                  
+              )
+    ).await?;
+    //msg.reply(ctx, "ist zu blöd den Bot zu bedienen.").await?;
     Ok(())
 }
 
@@ -65,6 +74,7 @@ async fn devschuppen(ctx: &Context, msg: &Message) -> CommandResult {
     let permission = mysql::functions::get_dev_schuppen_request_permission().await;
     if permission {
         let user = api::call_devschuppen_leaderboard::call_api().await;
+        let sorted_user = utils::get_leaderboard(user);
     } else {
         msg.reply(ctx, "```you can only check stats every 15 minutes```").await?;
     }
