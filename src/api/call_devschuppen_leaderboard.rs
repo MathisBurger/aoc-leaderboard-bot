@@ -12,6 +12,8 @@ pub struct user {
 
 pub async fn call_api() -> Vec<user>{
     let mut headers = HeaderMap::new();
+    
+    // token and login credentials are outdated :)
     headers.insert(ACCEPT, "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9".parse().unwrap());
     headers.insert(ACCEPT_LANGUAGE, "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7".parse().unwrap());
     headers.insert(CACHE_CONTROL, "max-age=0".parse().unwrap());
